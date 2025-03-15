@@ -30,15 +30,20 @@ export default async function Home({ params }: { params: { pageNr: number } }) {
           </div>
         )
       })}
-      <div className="flex justify-center mb-5 gap-3">
+      <div className="flex justify-between mb-5 gap-3">
+        {page === 1 && <p></p>}
         {page > 1 && (
-          <Link href={`/pagination/${page - 1}`}>
-            Sida {page - 1}
+          <Link href={`/pagination/${page - 1}`} className="justify-self-start">
+            ‹‹ Sida {page - 1}
           </Link>
         )}
-        <Link href={`/pagination/${page + 1}`}>
-          Sida {page + 1}
-        </Link>
+        <p className="justify-self-center">Sida {page} av 50</p>
+        {page < 50 && (
+          <Link href={`/pagination/${page + 1}`} className="justify-self-end">
+            Sida {page + 1} ››
+          </Link>
+        )}
+        {page === 50 && <p></p>}
       </div>
     </main>
   )
