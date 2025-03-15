@@ -1,8 +1,13 @@
 import { getTopStories } from "@/services/hn";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export default async function Home({ params }: { params: { pageNr: number } }) {
   const page: number = Number(params.pageNr) 
+
+  if (page < 1 || page > 50)
+    return notFound();
+
   const topstories = await getTopStories(page)
 
   return (
