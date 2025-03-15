@@ -2,7 +2,8 @@ import { getTopStories } from "@/services/hn";
 import Link from "next/link";
 
 export default async function Home() {
-  const topstories = await getTopStories();
+  let pageNumber: number = 1
+  const topstories = await getTopStories(pageNumber);
 
   return (
     <main>
@@ -16,6 +17,11 @@ export default async function Home() {
           </div>
         )
       }) }
+      <div className="flex justify-center mb-5">
+        <Link href={`/pagination/${pageNumber + 1}`}>
+          Sida {pageNumber + 1}
+        </Link>
+      </div>
     </main>
   );
 }
