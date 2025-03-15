@@ -1,9 +1,14 @@
 import { getTopStories } from "@/services/hn";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export default async function Home() {
-  let pageNumber: number = 1
-  const topstories = await getTopStories(pageNumber);
+export default async function Home({ params }: { params: { pageNr: number } }) {
+  const page: number = Number(params.pageNr) 
+
+  if (page < 1 || page > 50)
+    return notFound();
+
+  const topstories = await getTopStories(page)
 
   return (
     <main>
@@ -18,7 +23,7 @@ export default async function Home() {
               target={url?.host ? "_blank" : ""}
               className="pb-1 whitespace-nowrap text-ellipsis overflow-hidden block font-bold visited:text-slate-500"
             >
-              {index + 1}. {story.title}
+              {index + 1 + 10 * (page - 1)}. {story.title}
             </a>
             <div className="text-xs text-slate-700">
               {url?.host ? `${url?.host} - ` : ""}{" "}
@@ -31,14 +36,19 @@ export default async function Home() {
         )
       })}
       <div className="flex justify-between mb-5 gap-3">
-        <p></p>
-        <p className="justify-self-center">Sida {pageNumber} av 50</p>
-        <Link
-          href={`/pagination/${pageNumber + 1}`}
-          className="justify-self-start"
-        >
-          Sida {pageNumber + 1} ››
-        </Link>
+        {page === 1 && <p></p>}
+        {page > 1 && (
+          <Link href={`/pagination/${page - 1}`} className="justify-self-start">
+            ‹‹ Sida {page - 1}
+          </Link>
+        )}
+        <p className="justify-self-center">Sida {page} av 50</p>
+        {page < 50 && (
+          <Link href={`/pagination/${page + 1}`} className="justify-self-end">
+            Sida {page + 1} ››
+          </Link>
+        )}
+        {page === 50 && <p></p>}
       </div>
     </main>
   )
